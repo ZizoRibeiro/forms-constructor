@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :from do
+  factory :form do
     title "MyString"
     description "MyText"
     user nil
