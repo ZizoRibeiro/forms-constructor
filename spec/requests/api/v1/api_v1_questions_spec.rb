@@ -96,7 +96,7 @@ RSpec.describe "Api::V1::Questions", type: :request do
           end
 
           it 'returned data is correct' do
-            @question_attributest.each do |field|
+            @question_attributes.each do |field|
               expect(json[field.first.to_s]).to eql(field.last)
             end
           end
@@ -173,7 +173,7 @@ RSpec.describe "Api::V1::Questions", type: :request do
 
       context 'when the question does not exist' do
         it 'retuns status 404' do
-          delete '/api/v1/questios/0',
+          delete '/api/v1/questions/0',
               params: {},
               headers: header_with_authentication(@user)
           expect_status(404)
