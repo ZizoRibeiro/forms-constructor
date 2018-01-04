@@ -4,14 +4,14 @@ module Requests
       expect(response.status).to eql(expectation)
     end
 
-    def json 
+    def json
       JSON.parse(response.body)
     end
   end
 
   module HeaderHelpers
     def header_with_authentication user
-      return user.create_new_token_merge({'HTTP_ACCEPT': 'application/json'})
+      return user.create_new_auth_token.merge({'HTTP_ACCEPT': 'application/json'})
     end
 
     def header_without_authentication
