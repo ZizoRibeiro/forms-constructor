@@ -13,7 +13,7 @@ RSpec.describe 'Api::V1::Answers', type: :request do
         @answer1 = create(:answer, form: @form)
         @answer2 = create(:answer, form: @form)
 
-        get '/api/v1/answers', params: {form_id: @form.id},
+        get '/api/v1/answers',params: { form_id: @form.id },
                               headers: header_with_authentication(@user)
       end
 
@@ -26,8 +26,8 @@ RSpec.describe 'Api::V1::Answers', type: :request do
       end
 
       it 'returns Answers with right JSON' do
-        expect(json[0]).to eql(JSON.parse(@answer1.to_json))
-        expect(json[1]).to eql(JSON.parse(@answer2.to_json))
+        expect(json[0].except('questions_answers')).to eql(JSON.parse(@answer1.to_json))
+        expect(json[1].except('questions_answers')).to eql(JSON.parse(@answer2.to_json))
       end
     end
   end
@@ -77,10 +77,6 @@ RSpec.describe 'Api::V1::Answers', type: :request do
   end
 
   describe 'POST /answers' do
-    context 'With Invalid authentication headers' do
-      it_behaves_like :deny_without_authorization, :post, '/api/v1/answers'
-    end
-
     context 'With valid authentication headers' do
       before do
         @user = create(:user)
@@ -101,7 +97,7 @@ RSpec.describe 'Api::V1::Answers', type: :request do
           )
 
           post '/api/v1/answers', params: { form_id: @form.id,
-                                  questions_answers:
+                                            questions_answers:
                                   [
                                     @questions_answers_1_attributes,
                                     @questions_answers_2_attributes
@@ -127,7 +123,7 @@ RSpec.describe 'Api::V1::Answers', type: :request do
         before do
           @other_user = create(:user)
           post '/api/v1/answers', params: { form_id: 0 },
-                                  headers: header_with_authentication(@user)
+                                  headers: header_with_authentication(@other_user)
         end
 
         it 'returns status 404' do
@@ -188,7 +184,7 @@ RSpec.describe 'Api::V1::Answers', type: :request do
 
       context 'When answer dont exists' do
         it 'returns 404' do
-          delete "/api/v1/answers/#{FFaker::Lorem.word}", 
+          delete "/api/v1/answers/#{FFaker::Lorem.word}",
               params: {},
               headers: header_with_authentication(@user)
           expect_status(404)
